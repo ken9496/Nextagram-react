@@ -1,26 +1,32 @@
 import React from 'react';
-import Spinner from '../images/loader.gif'
+import Loader from 'react-loader-spinner';
 
-const SpinnerLoader = () => {
-    return (
-        <div style={styles.spinnerBox}>
-            <img src={Spinner} style={styles.spinnerWheel} alt='spinner' />
-        </div>
-    )
-}
 
-const styles = {
-    spinnerBox: {
-        width: '100vw',
-        height: '100vh',
-        position: 'relative'
-    },
-    spinnerWheel: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
+
+
+//passing in a property to see whether it will render or not
+const Spinner = (props) => {
+    if (props.loading) {
+        return (
+            <div className='sweet-loading' style={styles.sweetLoading}>
+                <Loader
+                    type="ThreeDots"
+                    color="red"
+                    height="100"
+                    width="200"
+                />
+            </div>
+        )
+    } else {
+        return null
     }
 }
 
-export default SpinnerLoader;
+const styles = {
+    sweetLoading: {
+        marginLeft: '45%',
+        marginTop: '20%'
+    }
+}
+
+export default Spinner;

@@ -1,42 +1,48 @@
 import React from 'react';
 import axios from 'axios';
 
-
-
-
 class UserImages extends React.Component {
-    state = {
-        images: [],
+    constructor(props) {
+        super(props)
+        this.state = {
+            userImages: []
+        }
     }
 
     componentDidMount() {
-        // performing a GET request
-        axios.get(`https://insta.nextacademy.com/api/v1/images?userId=${this.props.userId}`)
+        const { userId } = this.props
+        axios.get(`https://insta.nextacademy.com/api/v1/images?userId=${userId}`)
             .then(result => {
-                // If successful, we do stuffs with 'result'
-                console.log(result.data)
-                this.setState({ images: result.data, })
+                const userImages = result.data;
+                this.setState({ userImages })
             })
             .catch(error => {
-                // If unsuccessful, we notify users what went wrong
-                console.log('ERROR: ', error)
+                console.log('ERROR:', error)
             })
     }
 
     render() {
-        const { images } = this.state
         return (
-            <>
-                {
-                    images.map(image => {
-                        return (
-                            <img src={image} alt='upload' style={{ width: '250px', margin: '10px', height: '150px' }} />
-                        )
-                    })
+            <div>
+                <p className='text-center'>{this.state.userImages.map(userImage =>
+                    <img key={userImage} style={styles.userImageList} src={userImage} alt='profile' />)
                 }
-            </>
+                </p>
+
+            </div>
         )
     }
 }
 
+
 export default UserImages;
+
+const styles = {
+    userImageList: {
+        width: '150px',
+        height: '150px',
+        margin: '10px',
+        boxShadow: '10px 5px 5px grey',
+
+    }
+}

@@ -1,47 +1,91 @@
+import React from 'react';
+import { Form, FormGroup, Label, Input, } from 'reactstrap';
+import { Button, ModalFooter } from 'reactstrap';
+import axios from 'axios';
 
-
-import React from "react"
-
-import { Form, Row, Col, Label, Input, FormGroup } from "reactstrap"
+// class Login extends React.Component {
+//   render() {
+//     return (
+//       <Form>
+//         <FormGroup>
+//           <Label for="exampleEmail">Email</Label>
+//           <Input type="email" name="email" id="exampleEmail" placeholder="enter email" />
+//         </FormGroup>
+//         <FormGroup>
+//           <Label for="examplePassword">Password</Label>
+//           <Input type="password" name="password" id="examplePassword" placeholder="enter password" />
+//         </FormGroup>
+//       </Form>
+//     );
+//   }
+// }
 
 class Login extends React.Component {
-    states = {
-        email: "",
-        password: ""
-    }
+  state = {
+    email: '',
+    password: '',
+    isSignup: false,
+  }
 
-    handleSubmit = event => {
-        event.preventDefault()
+  handleEmailChange = evt => {
+    this.setState({ email: evt.target.value });
+  }
 
-    }
+  handlePasswordChange = evt => {
+    this.setState({ password: evt.target.value })
+  }
 
-    handleInput = event => {
-        this.setState({ states: event.target.value })
-    }
+  handleSubmit = event => {
+    event.preventDefault()
+    const { email, password } = this.state;
+    alert(`Signed up with email: ${email} password: ${password}`);
+    this.props.toggle()//passed down from modal
+    axios.post('https://insta.nextacademy.com/api/v1/login',
+      {
+        email: this.state.email,
+        password: this.state.password,
+      })
+      .then(response => {
+        console.log(response)
+        localStorage.setItem('jwt', response.data.auth_token)
+        localStorage.setItem('myProfile', response.data.user.id)
+        localStorage.setItem('myUserName', response.data.user.username)
+        localStorage.setItem('myProfileImage', response.data.user.profile_picture)
+        sessionStorage.setItem('clickCount', 10)
+        this.props.setUser()
+      })
+      .catch(error => {
+        console.log('ERROR: ', error)
+      }
+      )
 
-    render() {
-        return (
+  }
 
-            <Form>
-                <Row form>
+  handleInput = event => {
+    this.setState({ email: event.target.value })
+  }
 
-                    <Col md={6}>
-                        <FormGroup>
-                            <Label for="exampleEmail">Email</Label>
-                            <Input type="password" name="Email" id="examplePassword" placeholder="" />
-                        </FormGroup>
-                    </Col>
-                    <Col md={6}>
-                        <FormGroup>
-                            <Label for="examplePassword">Password</Label>
-                            <Input type="password" name="Password" id="examplePassword" placeholder="" />
-                        </FormGroup>
-                    </Col>
-                </Row>
-
-            </Form>
-
-        )
-    }
+  render() {
+    const { email, password } = this.state;
+    const isEnabled = email.length > 0 && password.length > 0;
+    const { isSignup } = this.state;
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <FormGroup>
+          <Label for="exampleEmail">Email:</Label>
+          <Input type="email" name="email" id="exampleEmail" placeholder="enter email" value={this.state.email} onChange={this.handleEmailChange} />
+        </FormGroup>
+        <FormGroup>
+          <Label for="examplePassword">Password:</Label>
+          <Input type="password" name="password" id="examplePassword" placeholder="enter password" value={this.state.password} onChange={this.handlePasswordChange} />
+        </FormGroup>
+        <ModalFooter>
+          <Button disabled={!isEnabled} color="primary" onClick={this.toggle}>{isSignup ? 'Sign Up' : 'Log In'}</Button>{' '}
+        </ModalFooter>
+      </Form>
+    )
+  }
 }
-export default Login
+
+
+export default Login;
