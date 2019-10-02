@@ -53,9 +53,9 @@ class App extends React.Component {
         <Spinner loading={this.state.loading} />
         {/* <HomePage /> */}
         <div>
-          {/* <Link to="/">Home</Link> */}
+          {/* <Link to="/">Home</Link>  (homepage) */}
           {/* We temporarily hardcode this to user id 1*/}
-          {/* <Link to="/users/1">My Profile</Link> */}
+          {/* <Link to="/users/1">My Profile</Link>  (Link to user profile)*/}
           <Route exact path="/" component={props => {
             return (
               <HomePage users={this.state.users}{...props} />
